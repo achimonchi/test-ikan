@@ -24,7 +24,6 @@ func NewPostgres(config *config.Config) *DB {
 		config.POSTGRES_SSLMODE,
 	)
 
-	fmt.Println(dsn)
 	maxLifetimeConns, err := strconv.Atoi(config.POSTGRES_CONNECTION_MAX_LIFETIME)
 	if err != nil {
 		panic(err)
