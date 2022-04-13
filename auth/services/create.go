@@ -4,6 +4,7 @@ import (
 	"auth/server/params"
 	"auth/server/views/web"
 	"context"
+	"fmt"
 
 	"github.com/thanhpk/randstr"
 )
@@ -13,6 +14,10 @@ func (s *AuthServices) CreateAuth(ctx context.Context, req *params.CreateAuth) (
 
 	auth := makeModelFromParamCreate(req)
 
+	isExist, _ := s.repo.FindByPhone(auth.Phone)
+	if isExist != nil {
+		return nil, fmt.Errorf("user with phone - %s already registered", auth.Phone)
+	}
 	err := s.repo.Registry(auth)
 	if err != nil {
 		return nil, err
