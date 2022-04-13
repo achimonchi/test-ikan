@@ -3,7 +3,9 @@ package config
 import "os"
 
 type Config struct {
-	APP_PORT string
+	APP_PORT   string
+	JWT_KEY    string
+	JWT_EXPIRY string
 
 	POSTGRES_HOST                    string
 	POSTGRES_PORT                    string
@@ -20,6 +22,8 @@ func GenerateConfig() *Config {
 	var config Config
 
 	config.APP_PORT = os.Getenv(APP_PORT)
+	config.JWT_EXPIRY = os.Getenv(JWT_EXPIRY)
+	config.JWT_KEY = os.Getenv(JWT_KEY)
 	config.POSTGRES_HOST = os.Getenv(POSTGRES_HOST)
 	config.POSTGRES_PORT = os.Getenv(POSTGRES_PORT)
 	config.POSTGRES_USER = os.Getenv(POSTGRES_USER)

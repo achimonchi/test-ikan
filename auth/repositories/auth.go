@@ -7,6 +7,7 @@ import (
 
 type AuthRepo interface {
 	Registry(model *models.Auth) error
+	FindByPhone(phone string) (*models.Auth, error)
 }
 
 type authRepo struct {
@@ -47,4 +48,35 @@ func (r *authRepo) Registry(model *models.Auth) error {
 	}
 
 	return tx.Commit()
+}
+
+func (r *authRepo) FindByPhone(phone string) (*models.Auth, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+
+	query := `
+		SELECT name, role, phone, password
+		FROM auth
+		WHERE phone=$1
+		LIMIT 1
+	`
+
+	stmt, err := tx.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	var auth models.Auth
+	err = stmt.QueryRow(phone).Scan(
+		&auth.Name, &auth.Role, &auth.Phone, &auth.Password,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+	return &auth, tx.Commit()
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"auth/config"
 	"auth/pkg/database"
+	"auth/pkg/utils"
 	"auth/repositories"
 	"auth/server"
 	"auth/server/handlers"
@@ -22,11 +23,13 @@ func main() {
 		fmt.Println("db success")
 	}
 
+	token := utils.NewToken(config)
+
 	trace := middleware.NewTraceMiddleware()
 
 	authRepo := repositories.NewAuthRepo(db.DB)
 
-	authServices := services.NewAuthServices(authRepo)
+	authServices := services.NewAuthServices(authRepo, token)
 
 	pingHandler := handlers.NewPingHandler()
 	authHandler := handlers.NewAuthHandler(authServices)

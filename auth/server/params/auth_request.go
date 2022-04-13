@@ -6,3 +6,8 @@ type CreateAuth struct {
 	Role     string `json:"role"`
 	Password string // auto generate with 4 characters
 }
+
+type Login struct {
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+}

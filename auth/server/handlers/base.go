@@ -27,11 +27,27 @@ func successCreatedResponse(rw http.ResponseWriter, payload interface{}) {
 	}
 	writeJsonResponse(rw, p)
 }
+func successSingleResponse(rw http.ResponseWriter, payload interface{}) {
+	rw.WriteHeader(http.StatusOK)
+	p := successResponse{
+		Status:  http.StatusOK,
+		Payload: payload,
+	}
+	writeJsonResponse(rw, p)
+}
 
 func badRequestResponse(rw http.ResponseWriter, payload interface{}) {
 	rw.WriteHeader(http.StatusBadRequest)
 	p := errorResponse{
 		Status: http.StatusBadRequest,
+		Err:    payload,
+	}
+	writeJsonResponse(rw, p)
+}
+func notFoundResponse(rw http.ResponseWriter, payload interface{}) {
+	rw.WriteHeader(http.StatusNotFound)
+	p := errorResponse{
+		Status: http.StatusNotFound,
 		Err:    payload,
 	}
 	writeJsonResponse(rw, p)

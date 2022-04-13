@@ -29,7 +29,7 @@ func (s *server) StartServer() {
 	s.router.GET("/v1/ping", s.trace.Trace(s.handlers.Ping.Ping))
 
 	s.router.POST("/v1/signup", s.trace.Trace(s.handlers.Auth.Registration))
-
+	s.router.POST("/v1/signin", s.trace.Trace(s.handlers.Auth.Login))
 	fmt.Println("server running at port", s.port)
 	http.ListenAndServe(s.port, s.router)
 }

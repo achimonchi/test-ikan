@@ -2,6 +2,8 @@ package config
 
 const (
 	APP_PORT                         string = "APP_PORT"
+	JWT_KEY                          string = "JWT_KEY"
+	JWT_EXPIRY                       string = "JWT_EXPIRY"
 	POSTGRES_HOST                    string = "POSTGRES_HOST"
 	POSTGRES_PORT                    string = "POSTGRES_PORT"
 	POSTGRES_USER                    string = "POSTGRES_USER"

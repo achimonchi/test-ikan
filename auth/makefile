@@ -9,4 +9,6 @@ run-dev:
 	POSTGRES_CONNECTION_MAX_LIFETIME="changeme" \
 	POSTGRES_MAX_OPEN_CONNECTION="changeme" \
 	POSTGRES_MAX_IDLE_CONNECTION="changeme" \
+	JWT_KEY="changeme" \
+	JWT_EXPIRY="changeme" \
 	go run cmd/main.go
