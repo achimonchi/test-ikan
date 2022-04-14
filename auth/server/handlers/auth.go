@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"auth/constants"
 	"auth/server/params"
 	"auth/services"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -13,6 +15,7 @@ import (
 type AuthHandler interface {
 	Registration(rw http.ResponseWriter, r *http.Request, p httprouter.Params)
 	Login(rw http.ResponseWriter, r *http.Request, p httprouter.Params)
+	Profile(rw http.ResponseWriter, r *http.Request, p httprouter.Params)
 }
 
 type authHandler struct {
@@ -64,4 +67,18 @@ func (a *authHandler) Login(rw http.ResponseWriter, r *http.Request, p httproute
 	}
 
 	successSingleResponse(rw, token)
+}
+
+func (a *authHandler) Profile(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	token := r.Context().Value(constants.TOKEN)
+
+	tokenStr := fmt.Sprintf("%v", token)
+
+	profile, err := a.service.Profile(tokenStr)
+	if err != nil {
+		badRequestResponse(rw, err)
+		return
+	}
+
+	successSingleResponse(rw, profile)
 }

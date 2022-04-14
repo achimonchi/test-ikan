@@ -9,7 +9,6 @@ import (
 	"auth/server/handlers"
 	"auth/server/middleware"
 	"auth/services"
-	"fmt"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -19,13 +18,11 @@ func main() {
 	config := config.GenerateConfig()
 
 	db := database.NewPostgres(config)
-	if db != nil {
-		fmt.Println("db success")
-	}
 
 	token := utils.NewToken(config)
 
 	trace := middleware.NewTraceMiddleware()
+	authMiddleware := middleware.NewAuthMiddleware(token)
 
 	authRepo := repositories.NewAuthRepo(db.DB)
 
@@ -40,6 +37,7 @@ func main() {
 		config.APP_PORT,
 		router,
 		trace,
+		authMiddleware,
 		handler,
 	).StartServer()
 }

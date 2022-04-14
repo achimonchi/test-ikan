@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
 )
 
@@ -23,6 +23,7 @@ type JWT struct {
 }
 
 type Payload struct {
+	jwt.StandardClaims
 	ID        uuid.UUID `json:"id"`
 	Phone     string    `json:"phone"`
 	Name      string    `json:"name"`
@@ -79,14 +80,13 @@ func (t *JWT) CreateToken(name, phone, role string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 
 	return jwtToken.SignedString([]byte(t.secretKey))
 }
 
 func (t *JWT) VerifyToken(token string) (*Payload, error) {
-	keyFunc := func(token *jwt.Token) (interface{}, error) {
+	keyfunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
 			return nil, errors.New("invalid token")
@@ -94,19 +94,16 @@ func (t *JWT) VerifyToken(token string) (*Payload, error) {
 		return []byte(t.secretKey), nil
 	}
 
-	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
+	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyfunc)
 	if err != nil {
-		verr, ok := err.(*jwt.ValidationError)
-		if ok && errors.Is(verr.Inner, errors.New("token expired")) {
-			return nil, errors.New("token expired")
+		if err.Error() == jwt.ErrSignatureInvalid.Error() {
+			return nil, err
 		}
-		return nil, errors.New("invalid token")
 	}
 
 	payload, ok := jwtToken.Claims.(*Payload)
 	if !ok {
-		return nil, errors.New("invalid token")
+		return nil, errors.New("token gagal")
 	}
-
 	return payload, nil
 }

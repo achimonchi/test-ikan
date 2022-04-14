@@ -4,6 +4,7 @@ import (
 	"auth/server/params"
 	"auth/server/views/web"
 	"database/sql"
+	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -23,9 +24,26 @@ func (s *AuthServices) LoginByPhone(req *params.Login) (*web.LoginResponse, erro
 		return nil, err
 	}
 
+	payload, err := s.token.VerifyToken(token)
+	fmt.Println(payload, err)
+
 	var res = web.LoginResponse{
 		Token: token,
 	}
 
+	return &res, nil
+}
+
+func (s *AuthServices) Profile(token string) (*web.ProfileResponse, error) {
+	payload, err := s.token.VerifyToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	var res = web.ProfileResponse{
+		Name:  payload.Name,
+		Role:  payload.Role,
+		Phone: payload.Phone,
+	}
 	return &res, nil
 }
