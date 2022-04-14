@@ -39,7 +39,26 @@ func (c *HttpClient) getClient() *http.Client {
 	return &client
 }
 
-func (c *HttpClient) Get(path string, headers map[string]string) ([]map[string]interface{}, error) {
+func (c *HttpClient) Get(path string, headers map[string]string) (map[string]interface{}, error) {
+	client := c.getClient()
+
+	resp, err := client.Get(fmt.Sprintf("%s/%s", c.clientHost, path))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		msg := fmt.Sprintf("failed to access %s/%s", c.clientHost, path)
+		return nil, errors.New(msg)
+	}
+
+	var response map[string]interface{}
+
+	err = json.NewDecoder(resp.Body).Decode(&response)
+
+	return response, err
+}
+func (c *HttpClient) GetList(path string, headers map[string]string) ([]map[string]interface{}, error) {
 	client := c.getClient()
 
 	resp, err := client.Get(fmt.Sprintf("%s/%s", c.clientHost, path))

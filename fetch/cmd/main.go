@@ -24,7 +24,13 @@ func main() {
 		config.CLIENT_TIMEOUT,
 	)
 
-	fetchServices := services.NewFetchServices(client)
+	converter := httpclient.NewHttpClient(
+		config.CONVERTER_HOST,
+		config.CONVERTER_PORT,
+		config.CONVERTER_TIMEOUT,
+	)
+
+	fetchServices := services.NewFetchServices(client, converter, config)
 
 	fetchHandlers := handlers.NewFetchHandlers(fetchServices)
 

@@ -22,6 +22,10 @@ func NewFetchHandlers(services *services.FetchServices) FetchHandlers {
 }
 
 func (f *fetch) FindAll(rw http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	f.services.GetList()
-	rw.Write([]byte("oke"))
+	list, err := f.services.GetList()
+	if err != nil {
+		badRequestResponse(rw, err)
+		return
+	}
+	successSingleResponse(rw, list)
 }

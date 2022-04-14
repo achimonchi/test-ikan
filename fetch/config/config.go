@@ -14,6 +14,11 @@ type Config struct {
 	CLIENT_HOST    string
 	CLIENT_PORT    string
 	CLIENT_TIMEOUT time.Duration
+
+	CONVERTER_HOST    string
+	CONVERTER_PORT    string
+	CONVERTER_API     string
+	CONVERTER_TIMEOUT time.Duration
 }
 
 func GenerateConfig() *Config {
@@ -28,6 +33,11 @@ func GenerateConfig() *Config {
 	config.CLIENT_HOST = os.Getenv(CLIENT_HOST)
 	config.CLIENT_PORT = os.Getenv(CLIENT_PORT)
 	config.CLIENT_TIMEOUT = time.Second * time.Duration(clientTimeout)
+
+	config.CONVERTER_HOST = os.Getenv(CONVERTER_HOST)
+	config.CONVERTER_PORT = os.Getenv(CONVERTER_PORT)
+	config.CONVERTER_API = os.Getenv(CONVERTER_API)
+	config.CONVERTER_TIMEOUT = time.Second * time.Duration(clientTimeout)
 
 	return &config
 }
