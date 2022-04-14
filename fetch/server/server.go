@@ -28,6 +28,7 @@ func NewServer(port string, router *httprouter.Router, handlers *handlers.Handle
 func (s *server) StartServer() {
 
 	s.router.GET("/v1/ping", s.middleware.Trace.Trace(s.handlers.PingHandlers.Ping))
+	s.router.GET("/v1/list", s.middleware.Trace.Trace(s.handlers.FetchHandlers.FindAll))
 
 	fmt.Println("server running at port", s.port)
 	http.ListenAndServe(s.port, s.router)

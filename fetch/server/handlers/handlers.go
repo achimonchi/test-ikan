@@ -1,11 +1,13 @@
 package handlers
 
 type Handlers struct {
-	PingHandlers PingHandlers
+	PingHandlers  PingHandlers
+	FetchHandlers FetchHandlers
 }
 
-func NewHandlers(ping PingHandlers) *Handlers {
+func NewHandlers(ping PingHandlers, fetch FetchHandlers) *Handlers {
 	return &Handlers{
-		PingHandlers: ping,
+		PingHandlers:  ping,
+		FetchHandlers: fetch,
 	}
 }

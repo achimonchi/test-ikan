@@ -2,10 +2,12 @@ package main
 
 import (
 	"fetch/config"
+	"fetch/pkg/httpclient"
 	"fetch/pkg/utils"
 	"fetch/server"
 	"fetch/server/handlers"
 	"fetch/server/middleware"
+	"fetch/services"
 	"fmt"
 
 	"github.com/julienschmidt/httprouter"
@@ -16,9 +18,19 @@ func main() {
 	config := config.GenerateConfig()
 	token := utils.NewToken(config)
 
+	client := httpclient.NewHttpClient(
+		config.CLIENT_HOST,
+		config.CLIENT_PORT,
+		config.CLIENT_TIMEOUT,
+	)
+
+	fetchServices := services.NewFetchServices(client)
+
+	fetchHandlers := handlers.NewFetchHandlers(fetchServices)
+
 	pingHandlers := handlers.NewPingHandlers()
 
-	handlers := handlers.NewHandlers(pingHandlers)
+	handlers := handlers.NewHandlers(pingHandlers, fetchHandlers)
 
 	traceMiddleware := middleware.NewTraceMiddleware()
 	authMiddleware := middleware.NewAuthMiddleware(token)
